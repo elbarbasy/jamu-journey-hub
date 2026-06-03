@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as CheckoutRouteImport } from './routes/checkout'
@@ -21,6 +22,11 @@ import { Route as OrderIdRouteImport } from './routes/order.$id'
 import { Route as AuthenticatedOwnerRouteImport } from './routes/_authenticated/owner'
 import { Route as AuthenticatedCashierRouteImport } from './routes/_authenticated/cashier'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QuizRoute = QuizRouteImport.update({
   id: '/quiz',
   path: '/quiz',
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/menu': typeof MenuRoute
   '/quiz': typeof QuizRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/cashier': typeof AuthenticatedCashierRoute
   '/owner': typeof AuthenticatedOwnerRoute
   '/order/$id': typeof OrderIdRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/menu': typeof MenuRoute
   '/quiz': typeof QuizRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/cashier': typeof AuthenticatedCashierRoute
   '/owner': typeof AuthenticatedOwnerRoute
   '/order/$id': typeof OrderIdRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/menu': typeof MenuRoute
   '/quiz': typeof QuizRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/cashier': typeof AuthenticatedCashierRoute
   '/_authenticated/owner': typeof AuthenticatedOwnerRoute
   '/order/$id': typeof OrderIdRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/menu'
     | '/quiz'
+    | '/sitemap.xml'
     | '/cashier'
     | '/owner'
     | '/order/$id'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/menu'
     | '/quiz'
+    | '/sitemap.xml'
     | '/cashier'
     | '/owner'
     | '/order/$id'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/menu'
     | '/quiz'
+    | '/sitemap.xml'
     | '/_authenticated/cashier'
     | '/_authenticated/owner'
     | '/order/$id'
@@ -162,12 +174,20 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   MenuRoute: typeof MenuRoute
   QuizRoute: typeof QuizRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   OrderIdRoute: typeof OrderIdRoute
   ProductIdRoute: typeof ProductIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quiz': {
       id: '/quiz'
       path: '/quiz'
@@ -269,6 +289,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRoute,
   MenuRoute: MenuRoute,
   QuizRoute: QuizRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   OrderIdRoute: OrderIdRoute,
   ProductIdRoute: ProductIdRoute,
 }

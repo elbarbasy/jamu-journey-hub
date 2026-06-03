@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /auth
+Disallow: /owner
+Disallow: /cashier
+Disallow: /checkout

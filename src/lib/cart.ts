@@ -19,6 +19,10 @@ const KEY = "majamu_cart_v1";
 const CTX_KEY = "majamu_ctx_v1";
 
 type Ctx = { tableCode: string | null; orderType: "DINE_IN" | "TAKE_AWAY" | null };
+const EMPTY_ITEMS: CartItem[] = [];
+const EMPTY_CTX: Ctx = { tableCode: null, orderType: null };
+let cartCache: { raw: string | null; value: CartItem[] } = { raw: null, value: EMPTY_ITEMS };
+let ctxCache: { raw: string | null; value: Ctx } = { raw: null, value: EMPTY_CTX };
 
 function read<T>(k: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -30,8 +34,25 @@ function write(k: string, v: unknown) {
   window.dispatchEvent(new Event("majamu:store"));
 }
 
+function getCartSnapshot() {
+  if (typeof window === "undefined") return EMPTY_ITEMS;
+  const raw = localStorage.getItem(KEY);
+  if (raw === cartCache.raw) return cartCache.value;
+  cartCache = { raw, value: raw ? read<CartItem[]>(KEY, EMPTY_ITEMS) : EMPTY_ITEMS };
+  return cartCache.value;
+}
+
+function getContextSnapshot() {
+  if (typeof window === "undefined") return EMPTY_CTX;
+  const raw = localStorage.getItem(CTX_KEY);
+  if (raw === ctxCache.raw) return ctxCache.value;
+  ctxCache = { raw, value: raw ? read<Ctx>(CTX_KEY, EMPTY_CTX) : EMPTY_CTX };
+  return ctxCache.value;
+}
+
 const listeners = new Set<() => void>();
 function subscribe(cb: () => void) {
+  if (typeof window === "undefined") return () => undefined;
   const handler = () => cb();
   window.addEventListener("majamu:store", handler);
   window.addEventListener("storage", handler);
@@ -46,13 +67,13 @@ function subscribe(cb: () => void) {
 export function useCart() {
   const items = useSyncExternalStore(
     subscribe,
-    () => read<CartItem[]>(KEY, []),
-    () => [] as CartItem[],
+    getCartSnapshot,
+    () => EMPTY_ITEMS,
   );
   const ctx = useSyncExternalStore(
     subscribe,
-    () => read<Ctx>(CTX_KEY, { tableCode: null, orderType: null }),
-    () => ({ tableCode: null, orderType: null }) as Ctx,
+    getContextSnapshot,
+    () => EMPTY_CTX,
   );
   return {
     items,

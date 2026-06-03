@@ -44,6 +44,10 @@ function AuthPage() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!PASSWORD_RE.test(password)) {
+      toast.error("Password minimal 8 karakter, harus ada huruf besar, angka, dan karakter khusus.");
+      return;
+    }
     setBusy(true);
     if (mode === "signup") {
       const { data, error } = await supabase.auth.signUp({
@@ -51,7 +55,6 @@ function AuthPage() {
         options: { emailRedirectTo: window.location.origin, data: { full_name: name } },
       });
       if (error) { toast.error(error.message); setBusy(false); return; }
-      // First user becomes owner. Subsequent signups are unassigned until owner promotes.
       if (data.user) {
         const { count } = await supabase.from("user_roles").select("*", { count: "exact", head: true });
         if (!count || count === 0) {

@@ -26,10 +26,17 @@ function AuthPage() {
 
   useEffect(() => {
     const routeFor = async (userId: string) => {
-      const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+      let { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+      if (!roles || roles.length === 0) {
+        const { count } = await supabase.from("user_roles").select("*", { count: "exact", head: true });
+        if (!count || count === 0) {
+          await supabase.from("user_roles").insert({ user_id: userId, role: "owner" });
+          roles = [{ role: "owner" }];
+        }
+      }
       if (roles?.some((r) => r.role === "cashier") && !roles?.some((r) => r.role === "owner")) {
         nav({ to: "/cashier" });
-      } else {
+      } else if (roles?.some((r) => r.role === "owner")) {
         nav({ to: "/owner" });
       }
     };

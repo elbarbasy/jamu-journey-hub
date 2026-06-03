@@ -95,7 +95,25 @@ function AuthPage() {
                 <Input id="e" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
               </div>
               <div>
-                <Label htmlFor="p">Password</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="p">Password</Label>
+                  {mode === "login" && (
+                    <button
+                      type="button"
+                      className="text-xs font-medium text-primary hover:underline"
+                      onClick={async () => {
+                        if (!email) { toast.error("Masukkan email dulu"); return; }
+                        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                          redirectTo: `${window.location.origin}/reset-password`,
+                        });
+                        if (error) toast.error(error.message);
+                        else toast.success("Link reset password dikirim ke email.");
+                      }}
+                    >
+                      Lupa password?
+                    </button>
+                  )}
+                </div>
                 <Input id="p" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} />
               </div>
               <Button disabled={busy} type="submit" className="w-full">{busy ? "…" : mode === "login" ? "Masuk" : "Daftar"}</Button>

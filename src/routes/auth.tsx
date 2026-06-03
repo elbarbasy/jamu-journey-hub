@@ -22,14 +22,21 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data }) => {
-      if (data.session) {
-        const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", data.session.user.id);
-        if (roles?.some((r) => r.role === "owner")) nav({ to: "/owner" });
-        else if (roles?.some((r) => r.role === "cashier")) nav({ to: "/cashier" });
-        else nav({ to: "/owner" }); // first user becomes owner via UI
+    const routeFor = async (userId: string) => {
+      const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", userId);
+      if (roles?.some((r) => r.role === "cashier") && !roles?.some((r) => r.role === "owner")) {
+        nav({ to: "/cashier" });
+      } else {
+        nav({ to: "/owner" });
       }
+    };
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      if (s?.user) setTimeout(() => routeFor(s.user.id), 0);
     });
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) routeFor(data.session.user.id);
+    });
+    return () => sub.subscription.unsubscribe();
   }, [nav]);
 
   const onSubmit = async (e: React.FormEvent) => {

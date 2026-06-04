@@ -40,6 +40,7 @@ function CashierPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [itemsBy, setItemsBy] = useState<Record<string, Item[]>>({});
   const [q, setQ] = useState("");
+  const sendFonnte = useServerFn(sendFonnteMessage);
 
   const load = async () => {
     const { data: os } = await supabase.from("orders").select("*").not("status", "in", "(COMPLETED,CANCELLED)").order("created_at");

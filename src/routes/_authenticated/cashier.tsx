@@ -63,16 +63,17 @@ function CashierPage() {
     const next = NEXT[o.status];
     if (!next) return;
     const updates: { status: Order["status"]; updated_at: string } = { status: next, updated_at: new Date().toISOString() };
-    const { error } = await supabase.from("orders").update(updates).eq("id", o.id);
+    const { data: updated, error } = await supabase.from("orders").update(updates).eq("id", o.id).select();
     if (error) return toast.error(error.message);
+    if (!updated || updated.length === 0) {
+      return toast.error("Gagal update status. Pastikan akun kamu punya role cashier/owner.");
+    }
+    // Optimistic local update biar UI langsung berubah tanpa nunggu realtime
+    setOrders((prev) => prev.map((x) => (x.id === o.id ? { ...x, status: next, updated_at: updates.updated_at } : x)));
+
     if (next === "PAID") {
       await supabase.from("payments").update({ status: "SUCCESS" }).eq("order_id", o.id);
-    }
-    if (next === "COMPLETED") {
-      // loyalty +1 point
-      const { data: l } = await supabase.from("loyalty_points").select("*").eq("whatsapp", o.customer_whatsapp).maybeSingle();
-      if (l) await supabase.from("loyalty_points").update({ points: (l.points ?? 0) + 1, updated_at: new Date().toISOString() }).eq("id", l.id);
-      else await supabase.from("loyalty_points").insert({ whatsapp: o.customer_whatsapp, points: 1 });
+      // Kirim struk digital via Fonnte begitu pembayaran diterima
       const items = itemsBy[o.id] ?? [];
       const msg = buildReceipt({
         order_number: o.order_number, customer_name: o.customer_name, customer_whatsapp: o.customer_whatsapp,
@@ -80,7 +81,14 @@ function CashierPage() {
         payment_method: o.payment_method as "QRIS" | "CASH", total: o.total,
         items: items.map((i) => ({ product_name: i.product_name, quantity: i.quantity, line_total: i.line_total })),
       });
-      await sendWhatsAppMock(o.customer_whatsapp, msg);
+      const res = await sendFonnte({ data: { target: o.customer_whatsapp, message: msg } });
+      if (res.ok) toast.success("Struk dikirim ke WhatsApp customer");
+      else toast.error(`Gagal kirim WA: ${res.error}`);
+    }
+    if (next === "COMPLETED") {
+      const { data: l } = await supabase.from("loyalty_points").select("*").eq("whatsapp", o.customer_whatsapp).maybeSingle();
+      if (l) await supabase.from("loyalty_points").update({ points: (l.points ?? 0) + 1, updated_at: new Date().toISOString() }).eq("id", l.id);
+      else await supabase.from("loyalty_points").insert({ whatsapp: o.customer_whatsapp, points: 1 });
     }
     toast.success(`Status diperbarui: ${next}`);
   };

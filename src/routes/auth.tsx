@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Leaf } from "lucide-react";
 import { toast } from "sonner";
+import logo from "@/assets/majamu-logo.jpg.asset.json";
 
 const PASSWORD_RE = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
@@ -83,11 +83,8 @@ function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-sunrise px-4">
       <div className="w-full max-w-sm rounded-3xl bg-card p-6 shadow-warm">
         <div className="flex flex-col items-center text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-warm shadow-warm">
-            <Leaf className="h-6 w-6 text-primary-foreground" />
-          </div>
-          <h1 className="mt-3 text-2xl font-extrabold">MAJAMU</h1>
-          <p className="text-xs uppercase tracking-widest text-muted-foreground">Staff Portal</p>
+          <img src={logo.url} alt="MAJAMU" width={180} height={48} className="h-12 w-auto object-contain" />
+          <p className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">Staff Portal</p>
         </div>
 
         <Button

@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Leaf, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { useCart, useHydrated } from "@/lib/cart";
+import logo from "@/assets/majamu-logo.jpg.asset.json";
 
 export function CustomerHeader() {
   const { count } = useCart();
@@ -12,13 +13,8 @@ export function CustomerHeader() {
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
         <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-warm shadow-warm">
-            <Leaf className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <div className="leading-tight">
-            <div className="text-base font-bold tracking-tight">MAJAMU</div>
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Tradisi yang Dimajukan</div>
-          </div>
+          <img src={logo.url} alt="MAJAMU" width={120} height={32} className="h-8 w-auto object-contain" />
+          <span className="sr-only">MAJAMU — Tradisi yang Dimajukan</span>
         </Link>
         {showCart && (
           <Link to="/cart" className="relative inline-flex h-10 w-10 items-center justify-center rounded-full bg-card shadow-soft">

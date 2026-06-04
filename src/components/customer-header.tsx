@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Leaf, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { useCart, useHydrated } from "@/lib/cart";
+import logo from "@/assets/majamu-logo.jpg.asset.json";
 
 export function CustomerHeader() {
   const { count } = useCart();

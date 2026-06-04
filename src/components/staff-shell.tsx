@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Leaf, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import logo from "@/assets/majamu-logo.jpg.asset.json";
 
 export function StaffShell({ children, title }: { children: React.ReactNode; title: string }) {
   const nav = useNavigate();

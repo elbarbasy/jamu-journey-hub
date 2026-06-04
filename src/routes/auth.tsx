@@ -83,7 +83,7 @@ function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-sunrise px-4">
       <div className="w-full max-w-sm rounded-3xl bg-card p-6 shadow-warm">
         <div className="flex flex-col items-center text-center">
-          <img src={logo.url} alt="MAJAMU" width={180} height={48} className="h-16 w-auto object-contain" />
+          <img src={logo.url} alt="MAJAMU" width={180} height={48} className="h-12 w-auto object-contain" />
           <p className="mt-2 text-xs uppercase tracking-widest text-muted-foreground">Staff Portal</p>
         </div>
 

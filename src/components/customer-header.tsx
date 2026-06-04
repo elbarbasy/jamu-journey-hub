@@ -13,7 +13,7 @@ export function CustomerHeader() {
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
         <Link to="/" className="flex items-center gap-2">
-          <img src={logo.url} alt="MAJAMU" width={120} height={32} className="h-11 w-auto object-contain" />
+          <img src={logo.url} alt="MAJAMU" width={120} height={32} className="h-9 w-auto object-contain" />
           <span className="sr-only">MAJAMU — Tradisi yang Dimajukan</span>
         </Link>
         {showCart && (

@@ -14,7 +14,7 @@ export function StaffShell({ children, title }: { children: React.ReactNode; tit
       <header className="sticky top-0 z-30 border-b border-border bg-sidebar text-sidebar-foreground">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo.url} alt="MAJAMU" width={120} height={32} className="h-11 w-auto object-contain" />
+            <img src={logo.url} alt="MAJAMU" width={120} height={32} className="h-9 w-auto object-contain" />
             <span className="text-[10px] uppercase tracking-widest opacity-70">{isOwner ? "Owner" : "Cashier"}</span>
           </Link>
           <div className="flex items-center gap-3">

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { StaffShell } from "@/components/staff-shell";
@@ -9,6 +9,7 @@ import { rupiah, formatDateTime } from "@/lib/format";
 import { buildReceipt } from "@/lib/whatsapp";
 import { sendFonnteMessage } from "@/lib/fonnte.functions";
 import { useServerFn } from "@tanstack/react-start";
+import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { Check, X, ArrowRight } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
@@ -37,6 +38,13 @@ export const Route = createFileRoute("/_authenticated/cashier")({
 });
 
 function CashierPage() {
+  const { isOwner, isCashier, loading } = useAuth();
+  const nav = useNavigate();
+  useEffect(() => {
+    // Owner murni (tanpa role kasir) diarahkan ke dashboard owner
+    if (!loading && isOwner && !isCashier) nav({ to: "/owner" });
+  }, [loading, isOwner, isCashier, nav]);
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [itemsBy, setItemsBy] = useState<Record<string, Item[]>>({});
   const [q, setQ] = useState("");

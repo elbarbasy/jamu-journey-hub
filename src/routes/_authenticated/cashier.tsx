@@ -38,6 +38,13 @@ export const Route = createFileRoute("/_authenticated/cashier")({
 });
 
 function CashierPage() {
+  const { isOwner, isCashier, loading } = useAuth();
+  const nav = useNavigate();
+  useEffect(() => {
+    // Owner murni (tanpa role kasir) diarahkan ke dashboard owner
+    if (!loading && isOwner && !isCashier) nav({ to: "/owner" });
+  }, [loading, isOwner, isCashier, nav]);
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [itemsBy, setItemsBy] = useState<Record<string, Item[]>>({});
   const [q, setQ] = useState("");

@@ -144,6 +144,7 @@ function CashierPage() {
               <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
                 <span className="text-xs">Total</span><span className="font-extrabold text-primary">{rupiah(o.total)}</span>
               </div>
+              <StatusTimeline status={o.status} />
               <div className="mt-3 flex gap-2">
                 {NEXT[o.status] && (
                   <Button size="sm" className="flex-1" onClick={() => advance(o)}>

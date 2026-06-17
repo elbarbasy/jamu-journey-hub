@@ -144,6 +144,7 @@ function CashierPage() {
               <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
                 <span className="text-xs">Total</span><span className="font-extrabold text-primary">{rupiah(o.total)}</span>
               </div>
+              <StatusTimeline status={o.status} />
               <div className="mt-3 flex gap-2">
                 {NEXT[o.status] && (
                   <Button size="sm" className="flex-1" onClick={() => advance(o)}>
@@ -157,5 +158,27 @@ function CashierPage() {
         </div>
       )}
     </StaffShell>
+  );
+}
+
+const FLOW: Array<{ key: Order["status"]; label: string }> = [
+  { key: "WAITING_PAYMENT", label: "Bayar" },
+  { key: "PAID", label: "Dibayar" },
+  { key: "PROCESSING", label: "Proses" },
+  { key: "READY_FOR_PICKUP", label: "Siap" },
+  { key: "COMPLETED", label: "Selesai" },
+];
+function StatusTimeline({ status }: { status: Order["status"] }) {
+  if (status === "CANCELLED") return null;
+  const idx = FLOW.findIndex((f) => f.key === status);
+  return (
+    <div className="mt-3 flex items-center gap-1">
+      {FLOW.map((f, i) => (
+        <div key={f.key} className="flex flex-1 flex-col items-center gap-1">
+          <div className={`h-1.5 w-full rounded-full ${i <= idx ? "bg-primary" : "bg-muted"}`} />
+          <span className={`text-[9px] font-semibold ${i <= idx ? "text-primary" : "text-muted-foreground"}`}>{f.label}</span>
+        </div>
+      ))}
+    </div>
   );
 }

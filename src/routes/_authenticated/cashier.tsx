@@ -96,11 +96,6 @@ function CashierPage() {
       if (res.ok) toast.success("Struk dikirim ke WhatsApp customer");
       else toast.error(`Gagal kirim WA: ${res.error}`);
     }
-    if (next === "COMPLETED") {
-      const { data: l } = await supabase.from("loyalty_points").select("*").eq("whatsapp", o.customer_whatsapp).maybeSingle();
-      if (l) await supabase.from("loyalty_points").update({ points: (l.points ?? 0) + 1, updated_at: new Date().toISOString() }).eq("id", l.id);
-      else await supabase.from("loyalty_points").insert({ whatsapp: o.customer_whatsapp, points: 1 });
-    }
     toast.success(`Status diperbarui: ${next}`);
   };
 

@@ -53,14 +53,14 @@ function Home() {
         {resolving && <div className="mt-4 rounded-xl bg-card p-4 text-sm">Menyiapkan meja {table}…</div>}
 
         <section className="mt-5 grid gap-3">
-          <Link to="/quiz" className="group rounded-2xl bg-gradient-warm p-5 text-primary-foreground shadow-warm transition active:scale-[0.99]">
+          <Link to="/menu" search={{ filter: "Rekomendasi" }} className="group rounded-2xl bg-gradient-warm p-5 text-primary-foreground shadow-warm transition active:scale-[0.99]">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-background/20 backdrop-blur">
                 <Sparkles className="h-6 w-6" />
               </div>
               <div className="flex-1">
-                <div className="text-lg font-bold">Mulai Quiz Rekomendasi</div>
-                <div className="text-sm opacity-90">5 pertanyaan singkat, kami pilihkan top 3 jamu untukmu.</div>
+                <div className="text-lg font-bold">Lihat Rekomendasi Hari Ini</div>
+                <div className="text-sm opacity-90">Pilihan favorit yang dikurasi untuk kamu.</div>
               </div>
             </div>
           </Link>

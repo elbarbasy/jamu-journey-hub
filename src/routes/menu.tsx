@@ -39,9 +39,6 @@ function MenuPage() {
       <main className="mx-auto max-w-2xl px-4 pb-24 pt-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-extrabold">Menu</h1>
-          <Link to="/quiz" className="inline-flex items-center gap-1 rounded-full bg-secondary px-3 py-1.5 text-xs font-semibold text-secondary-foreground">
-            <Sparkles className="h-3 w-3" /> Quiz
-          </Link>
         </div>
 
         <div className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

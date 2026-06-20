@@ -238,56 +238,6 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   return <div><Label className="mb-1 block text-xs">{label}</Label>{children}</div>;
 }
 
-type TableRow = Database["public"]["Tables"]["tables"]["Row"];
-function TablesTab() {
-  const [rows, setRows] = useState<TableRow[]>([]);
-  const [code, setCode] = useState("");
-  const [type, setType] = useState<"DINE_IN" | "TAKE_AWAY">("DINE_IN");
-  const load = async () => { const { data } = await supabase.from("tables").select("*").order("code"); setRows((data as TableRow[] | null) ?? []); };
-  useEffect(() => { load(); }, []);
-  const add = async () => {
-    if (!code.trim()) return;
-    const { error } = await supabase.from("tables").insert({ code: code.trim(), order_type: type });
-    if (error) return toast.error(error.message);
-    setCode(""); load();
-  };
-  const toggle = async (r: TableRow) => { await supabase.from("tables").update({ is_active: !r.is_active }).eq("id", r.id); load(); };
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-  return (
-    <div className="grid gap-4 md:grid-cols-2">
-      <div className="rounded-2xl bg-card p-4 shadow-soft">
-        <div className="mb-3 font-bold">Tambah QR Meja</div>
-        <div className="flex flex-wrap gap-2">
-          <Input className="max-w-40" placeholder="A06" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} />
-          <select className="rounded-md border bg-background px-3" value={type} onChange={(e) => setType(e.target.value as "DINE_IN" | "TAKE_AWAY")}>
-            <option value="DINE_IN">Dine In</option><option value="TAKE_AWAY">Take Away</option>
-          </select>
-          <Button onClick={add}>Tambah</Button>
-        </div>
-      </div>
-      <div className="rounded-2xl bg-card p-4 shadow-soft md:col-span-2">
-        <div className="mb-3 font-bold">Daftar QR</div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {rows.map((r) => {
-            const url = `${baseUrl}/?table=${encodeURIComponent(r.code)}`;
-            const qr = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
-            return (
-              <div key={r.id} className={`rounded-xl border p-3 text-center ${r.is_active ? "" : "opacity-50"}`}>
-                <div className="font-extrabold">{r.code}</div>
-                <div className="text-xs text-muted-foreground">{r.order_type === "DINE_IN" ? "Dine In" : "Take Away"}</div>
-                <img src={qr} alt={`QR ${r.code}`} className="mx-auto my-2 h-32 w-32" />
-                <div className="flex justify-center gap-1">
-                  <a href={qr} download={`QR-${r.code}.png`} className="text-xs underline">Download</a>
-                  <Button size="sm" variant="ghost" onClick={() => toggle(r)}>{r.is_active ? "Nonaktifkan" : "Aktifkan"}</Button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function StaffTab() {
   const [list, setList] = useState<{ user_id: string; role: string }[]>([]);

@@ -40,13 +40,11 @@ function OwnerPage() {
           <TabsTrigger value="dashboard">Ringkasan</TabsTrigger>
           <TabsTrigger value="orders">Pesanan</TabsTrigger>
           <TabsTrigger value="products">Produk</TabsTrigger>
-          <TabsTrigger value="tables">QR Meja</TabsTrigger>
           <TabsTrigger value="staff">Staff</TabsTrigger>
         </TabsList>
         <TabsContent value="dashboard" className="mt-4"><DashboardTab /></TabsContent>
         <TabsContent value="orders" className="mt-4"><OrdersTab /></TabsContent>
         <TabsContent value="products" className="mt-4"><ProductsTab /></TabsContent>
-        <TabsContent value="tables" className="mt-4"><TablesTab /></TabsContent>
         <TabsContent value="staff" className="mt-4"><StaffTab /></TabsContent>
       </Tabs>
     </StaffShell>

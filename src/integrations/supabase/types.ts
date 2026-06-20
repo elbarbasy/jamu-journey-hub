@@ -14,24 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
-      loyalty_points: {
+      app_config: {
         Row: {
-          id: string
-          points: number
+          id: number
+          nomor_antrian_counter: number
+          threshold_urgensi_menit: number
+          toko_status: Database["public"]["Enums"]["toko_status"]
           updated_at: string
-          whatsapp: string
         }
         Insert: {
-          id?: string
-          points?: number
+          id?: number
+          nomor_antrian_counter?: number
+          threshold_urgensi_menit?: number
+          toko_status?: Database["public"]["Enums"]["toko_status"]
           updated_at?: string
-          whatsapp: string
         }
         Update: {
-          id?: string
-          points?: number
+          id?: number
+          nomor_antrian_counter?: number
+          threshold_urgensi_menit?: number
+          toko_status?: Database["public"]["Enums"]["toko_status"]
           updated_at?: string
-          whatsapp?: string
+        }
+        Relationships: []
+      }
+      filter_chips: {
+        Row: {
+          created_at: string
+          id: string
+          is_special: boolean
+          nama: string
+          updated_at: string
+          urutan: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_special?: boolean
+          nama: string
+          updated_at?: string
+          urutan?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_special?: boolean
+          nama?: string
+          updated_at?: string
+          urutan?: number
+        }
+        Relationships: []
+      }
+      ingredients: {
+        Row: {
+          created_at: string
+          id: string
+          kategori: Database["public"]["Enums"]["ingredient_kategori"]
+          nama: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kategori: Database["public"]["Enums"]["ingredient_kategori"]
+          nama: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kategori?: Database["public"]["Enums"]["ingredient_kategori"]
+          nama?: string
         }
         Relationships: []
       }
@@ -83,12 +134,43 @@ export type Database = {
           },
         ]
       }
+      order_status_history: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          status: Database["public"]["Enums"]["order_status"]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          status: Database["public"]["Enums"]["order_status"]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          status?: Database["public"]["Enums"]["order_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_status_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           created_at: string
           customer_name: string
           customer_whatsapp: string
           id: string
+          idempotency_key: string | null
+          nomor_tampilan: Json | null
           notes: string | null
           order_number: string
           order_type: Database["public"]["Enums"]["order_type"]
@@ -104,6 +186,8 @@ export type Database = {
           customer_name: string
           customer_whatsapp: string
           id?: string
+          idempotency_key?: string | null
+          nomor_tampilan?: Json | null
           notes?: string | null
           order_number?: string
           order_type: Database["public"]["Enums"]["order_type"]
@@ -119,6 +203,8 @@ export type Database = {
           customer_name?: string
           customer_whatsapp?: string
           id?: string
+          idempotency_key?: string | null
+          nomor_tampilan?: Json | null
           notes?: string | null
           order_number?: string
           order_type?: Database["public"]["Enums"]["order_type"]
@@ -169,11 +255,73 @@ export type Database = {
           },
         ]
       }
+      product_filter_chips: {
+        Row: {
+          filter_chip_id: string
+          product_id: string
+        }
+        Insert: {
+          filter_chip_id: string
+          product_id: string
+        }
+        Update: {
+          filter_chip_id?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_filter_chips_filter_chip_id_fkey"
+            columns: ["filter_chip_id"]
+            isOneToOne: false
+            referencedRelation: "filter_chips"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_filter_chips_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_ingredients: {
+        Row: {
+          ingredient_id: string
+          product_id: string
+        }
+        Insert: {
+          ingredient_id: string
+          product_id: string
+        }
+        Update: {
+          ingredient_id?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_ingredients_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_ingredients_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           created_at: string
           description: string
+          deskripsi_kontekstual: Json
           experience_tags: string[]
+          filter_chip_unggulan_id: string | null
           flavor_tags: string[]
           id: string
           image_url: string | null
@@ -182,6 +330,7 @@ export type Database = {
           name: string
           price: number
           quiz_mapping: Json
+          status_stok: Database["public"]["Enums"]["stok_status"]
           supports_creamy: boolean
           supports_sweetness: boolean
           supports_temperature: boolean
@@ -190,7 +339,9 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string
+          deskripsi_kontekstual?: Json
           experience_tags?: string[]
+          filter_chip_unggulan_id?: string | null
           flavor_tags?: string[]
           id?: string
           image_url?: string | null
@@ -199,6 +350,7 @@ export type Database = {
           name: string
           price: number
           quiz_mapping?: Json
+          status_stok?: Database["public"]["Enums"]["stok_status"]
           supports_creamy?: boolean
           supports_sweetness?: boolean
           supports_temperature?: boolean
@@ -207,7 +359,9 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string
+          deskripsi_kontekstual?: Json
           experience_tags?: string[]
+          filter_chip_unggulan_id?: string | null
           flavor_tags?: string[]
           id?: string
           image_url?: string | null
@@ -216,12 +370,21 @@ export type Database = {
           name?: string
           price?: number
           quiz_mapping?: Json
+          status_stok?: Database["public"]["Enums"]["stok_status"]
           supports_creamy?: boolean
           supports_sweetness?: boolean
           supports_temperature?: boolean
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_filter_chip_unggulan_id_fkey"
+            columns: ["filter_chip_unggulan_id"]
+            isOneToOne: false
+            referencedRelation: "filter_chips"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -241,83 +404,27 @@ export type Database = {
         }
         Relationships: []
       }
-      quiz_options: {
-        Row: {
-          id: string
-          label: string
-          position: number
-          question_id: string
-          tag: string
-        }
-        Insert: {
-          id?: string
-          label: string
-          position?: number
-          question_id: string
-          tag: string
-        }
-        Update: {
-          id?: string
-          label?: string
-          position?: number
-          question_id?: string
-          tag?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "quiz_options_question_id_fkey"
-            columns: ["question_id"]
-            isOneToOne: false
-            referencedRelation: "quiz_questions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      quiz_questions: {
+      shift_notes: {
         Row: {
           created_at: string
           id: string
-          is_active: boolean
-          position: number
-          question: string
+          kategori: Database["public"]["Enums"]["shift_note_kategori"]
+          keterangan: string
+          nominal: number | null
         }
         Insert: {
           created_at?: string
           id?: string
-          is_active?: boolean
-          position: number
-          question: string
+          kategori: Database["public"]["Enums"]["shift_note_kategori"]
+          keterangan?: string
+          nominal?: number | null
         }
         Update: {
           created_at?: string
           id?: string
-          is_active?: boolean
-          position?: number
-          question?: string
-        }
-        Relationships: []
-      }
-      tables: {
-        Row: {
-          code: string
-          created_at: string
-          id: string
-          is_active: boolean
-          order_type: Database["public"]["Enums"]["order_type"]
-        }
-        Insert: {
-          code: string
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          order_type?: Database["public"]["Enums"]["order_type"]
-        }
-        Update: {
-          code?: string
-          created_at?: string
-          id?: string
-          is_active?: boolean
-          order_type?: Database["public"]["Enums"]["order_type"]
+          kategori?: Database["public"]["Enums"]["shift_note_kategori"]
+          keterangan?: string
+          nominal?: number | null
         }
         Relationships: []
       }
@@ -357,6 +464,12 @@ export type Database = {
     }
     Enums: {
       app_role: "owner" | "cashier"
+      ingredient_kategori:
+        | "rimpang_segar"
+        | "rempah_kering"
+        | "daun_bunga"
+        | "asam_sitrus"
+        | "pemanis"
       order_status:
         | "WAITING_PAYMENT"
         | "PAID"
@@ -367,6 +480,14 @@ export type Database = {
       order_type: "DINE_IN" | "TAKE_AWAY"
       payment_method: "QRIS" | "CASH"
       payment_status: "PENDING" | "SUCCESS" | "FAILED"
+      shift_note_kategori:
+        | "pengeluaran"
+        | "selisih_kas_kurang"
+        | "selisih_kas_lebih"
+        | "catatan_kas"
+        | "lainnya"
+      stok_status: "tersedia" | "habis_hari_ini"
+      toko_status: "buka" | "tutup"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -495,6 +616,13 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["owner", "cashier"],
+      ingredient_kategori: [
+        "rimpang_segar",
+        "rempah_kering",
+        "daun_bunga",
+        "asam_sitrus",
+        "pemanis",
+      ],
       order_status: [
         "WAITING_PAYMENT",
         "PAID",
@@ -506,6 +634,15 @@ export const Constants = {
       order_type: ["DINE_IN", "TAKE_AWAY"],
       payment_method: ["QRIS", "CASH"],
       payment_status: ["PENDING", "SUCCESS", "FAILED"],
+      shift_note_kategori: [
+        "pengeluaran",
+        "selisih_kas_kurang",
+        "selisih_kas_lebih",
+        "catatan_kas",
+        "lainnya",
+      ],
+      stok_status: ["tersedia", "habis_hari_ini"],
+      toko_status: ["buka", "tutup"],
     },
   },
 } as const

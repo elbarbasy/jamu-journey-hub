@@ -28,14 +28,10 @@ function Home() {
 
   useEffect(() => {
     if (!table) return;
-    setResolving(true);
-    supabase.from("tables").select("code, order_type, is_active").eq("code", table).maybeSingle().then(({ data }) => {
-      if (data && data.is_active) {
-        setContext({ tableCode: data.code, orderType: data.order_type as "DINE_IN" | "TAKE_AWAY" });
-        navigate({ to: "/menu" });
-      }
-      setResolving(false);
-    });
+    // Sederhana: treat ?table=NN sebagai dine-in dengan kode meja apa adanya.
+    setContext({ tableCode: table, orderType: "DINE_IN" });
+    navigate({ to: "/menu" });
+    setResolving(false);
   }, [table, setContext, navigate]);
 
   return (
